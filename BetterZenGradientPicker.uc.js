@@ -1488,6 +1488,9 @@ class PaletteModule {
 
   patchPicker(picker) {
     const self = this;
+    if (!self._lastWorkspaceId) {
+      self._lastWorkspaceId = gZenWorkspaces?.activeWorkspace?.uuid || null;
+    }
     // Capture original for forceNativeLightness
     this.origGetColor = picker.getColorFromPosition.bind(picker);
 
@@ -1542,17 +1545,34 @@ class PaletteModule {
 
       return res;
     };
+    // 2. Clear stale forced palette before workspace reconstruction.
+    // Without this, a forced mode from workspace A (especially B&W)
+    // can leak into workspace B during native color rebuilding.
+    const origOnWsChange = picker.onWorkspaceChange.bind(picker);
+    picker.onWorkspaceChange = function (...args) {
+      const incomingWsId =
+        args?.[0]?.uuid || gZenWorkspaces?.activeWorkspace?.uuid;
+      const isWsChange = incomingWsId && incomingWsId !== self._lastWorkspaceId;
 
-    // 2. Authoritative Position Color: Force mode during drags
+      if (isWsChange && !self._internalUpdate) {
+        self._selectedMode = null;
+      }
+
+      const res = origOnWsChange.apply(this, args);
+      if (incomingWsId) {
+        self._lastWorkspaceId = incomingWsId;
+      }
+      return res;
+    };
+    // 3. Keep native type handling for position->color math.
+    // For full palettes, type is intentionally undefined; forcing it from a stale
+    // selected mode can collapse colors to grayscale on workspace-switch inversion.
     const origGetColor = picker.getColorFromPosition.bind(picker);
     picker.getColorFromPosition = function (x, y, type) {
-      if (self._selectedMode) {
-        type = self._selectedMode.type;
-      }
       return origGetColor(x, y, type);
     };
 
-    // 3. Authoritative Background: Force mode during background generation
+    // 4. Authoritative Background: Force mode during background generation
     const origGetGradient = picker.getGradient.bind(picker);
     picker.getGradient = function (colors, forToolbar = false) {
       if (self._selectedMode && colors.length > 0) {
@@ -2107,12 +2127,27 @@ class PaletteModule {
       picker.currentWorkspace?.theme?.gradientColors?.[0]?.algorithm ||
       "";
 
-    if (!panel) return;
-    const rect = panel.getBoundingClientRect();
     const padding = 30;
     const dotHalfSize = 29;
-    const width = rect.width + padding * 2;
-    const height = rect.height + padding * 2;
+    let width;
+    let height;
+
+    if (panel) {
+      const rect = panel.getBoundingClientRect();
+      // Hidden panel can report near-zero dimensions; use stable fallback geometry.
+      if (rect.width > 10 && rect.height > 10) {
+        width = rect.width + padding * 2;
+        height = rect.height + padding * 2;
+      }
+    }
+
+    if (!width || !height) {
+      // Zen's native baseline picker size used before render.
+      const base = 380;
+      width = base + padding * 2;
+      height = base + padding * 2;
+    }
+
     const cx = width / 2,
       cy = height / 2;
     const radius = (width - padding) / 2;
@@ -2149,7 +2184,9 @@ class PaletteModule {
       const rgb = picker.hslToRgb(h / 360, s / 100, l / 100);
       const colorStr = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
 
-      dot.element.style.setProperty("--zen-theme-picker-dot-color", colorStr);
+      if (dot.element) {
+        dot.element.style.setProperty("--zen-theme-picker-dot-color", colorStr);
+      }
       return {
         ...dot,
         c: rgb,
@@ -2218,6 +2255,7 @@ class DynamicThemeModule {
     this._lastIsDark = null;
     this._pendingDragInversionTimer = null;
     this._lastPickerGeometry = null;
+    this._inversionToastTimer = null;
   }
 
   init(picker) {
@@ -2308,6 +2346,10 @@ class DynamicThemeModule {
         if (this._pendingDragInversionTimer) {
           clearTimeout(this._pendingDragInversionTimer);
           this._pendingDragInversionTimer = null;
+        }
+        if (this._inversionToastTimer) {
+          clearTimeout(this._inversionToastTimer);
+          this._inversionToastTimer = null;
         }
       },
       { once: true },
@@ -2443,7 +2485,6 @@ class DynamicThemeModule {
       this.checkAndApplyInversion(picker, false, false);
     }, 180);
   }
-
   _getPickerGeometry(picker) {
     const padding = 30;
     const dotHalfSize = 29;
@@ -2483,6 +2524,70 @@ class DynamicThemeModule {
       cy: height / 2,
       dotHalfSize,
     };
+  }
+
+  _showInversionToast() {
+    try {
+      const ui = window.gZenUIManager;
+      const container = document.getElementById("zen-toast-container");
+      if (!ui || !container) return;
+
+      const existing = container.querySelector(
+        '.zen-toast[data-zen-toast-id="zen-gradient-inverted-toast"]',
+      );
+      if (existing) existing.remove();
+
+      const wrapper = document.createXULElement("hbox");
+      wrapper.classList.add("zen-toast");
+      wrapper.setAttribute("data-zen-toast-id", "zen-gradient-inverted-toast");
+      const vbox = document.createXULElement("vbox");
+      const label = document.createXULElement("label");
+      label.textContent = "Gradient inverted successfully!";
+      vbox.appendChild(label);
+      wrapper.appendChild(vbox);
+
+      container.removeAttribute("hidden");
+      container.appendChild(wrapper);
+
+      const closeToast = () => {
+        if (Services.prefs.getBoolPref("ui.popup.disable_autohide")) return;
+        const finish = () => {
+          wrapper.remove();
+          if (container.children.length === 0) {
+            container.setAttribute("hidden", true);
+          }
+        };
+        if (ui.motion?.animate) {
+          ui.motion
+            .animate(
+              wrapper,
+              { opacity: [1, 0], scale: [1, 0.5] },
+              { duration: 0.2, bounce: 0 },
+            )
+            .then(finish);
+        } else {
+          finish();
+        }
+      };
+
+      if (!wrapper.style.transform) {
+        wrapper.style.transform = "scale(0)";
+      }
+      if (ui.motion?.animate) {
+        ui.motion.animate(
+          wrapper,
+          { scale: 1 },
+          { type: "spring", bounce: 0.2, duration: 0.5 },
+        );
+      } else {
+        wrapper.style.transform = "scale(1)";
+      }
+
+      if (this._inversionToastTimer) {
+        clearTimeout(this._inversionToastTimer);
+      }
+      this._inversionToastTimer = setTimeout(closeToast, 1800);
+    } catch (e) {}
   }
 
   checkFromPickerState(picker) {
@@ -2615,7 +2720,12 @@ class DynamicThemeModule {
         }, 0) / picker.dots.length;
       currentL = (avgDist / radius) * 100;
     } else {
-      currentL = firstDot.lightness !== undefined ? firstDot.lightness : 50;
+      const wsLightness = Number(picker.currentWorkspace?.theme?.lightness);
+      currentL = Number.isFinite(firstDot.lightness)
+        ? firstDot.lightness
+        : Number.isFinite(wsLightness)
+          ? wsLightness
+          : 50;
     }
 
     // Dark theme requires dark gradients (val <= 50). Light theme requires light gradients (val >= 50)
@@ -2784,6 +2894,10 @@ class DynamicThemeModule {
             // dots and recreates them with a single scalar lightness.
             picker.updateCurrentWorkspace(isPerDotPalette);
           }, 50);
+        }
+
+        if (needsInversion) {
+          this._showInversionToast();
         }
       } finally {
         setTimeout(() => {
