@@ -1417,36 +1417,65 @@ class PaletteModule {
     const actions = document.getElementById(
       "PanelUI-zen-gradient-generator-color-actions",
     );
-    if (!actions || document.getElementById("zen-picker-palette-cycle")) return;
+    const gradientPanel = this.picker?.panel?.querySelector(
+      ".zen-theme-picker-gradient",
+    );
+    if (!actions || !gradientPanel) return;
 
-    const btn = document.createElement("button");
-    btn.id = "zen-picker-palette-cycle";
-    btn.className = "subviewbutton";
+    if (!document.getElementById("zen-picker-palette-cycle")) {
+      const btn = document.createElement("button");
+      btn.id = "zen-picker-palette-cycle";
+      btn.className = "subviewbutton";
 
-    btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: translate(-1px, -1px);">
+      btn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: translate(-1px, -1px);">
  <path d="M2 12C2 17.5228 6.47715 22 12 22C13.6569 22 15 20.6569 15 19V18.5C15 18.0356 15 17.8034 15.0257 17.6084C15.2029 16.2622 16.2622 15.2029 17.6084 15.0257C17.8034 15 18.0356 15 18.5 15H19C20.6569 15 22 13.6569 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
  <path d="M7 13C7.55228 13 8 12.5523 8 12C8 11.4477 7.55228 11 7 11C6.44772 11 6 11.4477 6 12C6 12.5523 6.44772 13 7 13Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
  <path d="M16 9C16.5523 9 17 8.55228 17 8C17 7.44772 16.5523 7 16 7C15.4477 7 15 7.44772 15 8C15 8.55228 15.4477 9 16 9Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
  <path d="M10 8C10.5523 8 11 7.55228 11 7C11 6.44772 10.5523 6 10 6C9.44772 6 9 6.44772 9 7C9 7.55228 9.44772 8 10 8Z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
  </svg>`;
+      ["mousedown", "click", "mouseup", "command"].forEach((type) => {
+        btn.addEventListener(
+          type,
+          (e) => {
+            e.stopPropagation();
+            if (type === "click" || type === "command") {
+              e.preventDefault();
+              if (!btn.disabled) this.cyclePalette();
+            }
+          },
+          true,
+        );
+      });
 
-    ["mousedown", "click", "mouseup", "command"].forEach((type) => {
-      btn.addEventListener(
-        type,
-        (e) => {
-          e.stopPropagation();
-          if (type === "click" || type === "command") {
-            e.preventDefault();
-            if (!btn.disabled) this.cyclePalette();
-          }
-        },
-        true,
-      );
-    });
+      const heart = document.getElementById("zen-picker-favorite-save");
+      if (heart) actions.insertBefore(btn, heart);
+      else actions.appendChild(btn);
+    }
 
-    const heart = document.getElementById("zen-picker-favorite-save");
-    if (heart) actions.insertBefore(btn, heart);
-    else actions.appendChild(btn);
+    if (!document.getElementById("zen-picker-randomize")) {
+      const randomBtn = document.createElement("button");
+      randomBtn.id = "zen-picker-randomize";
+      randomBtn.className = "subviewbutton";
+      randomBtn.setAttribute("tooltiptext", "Randomize gradient");
+      randomBtn.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+ <path d="M13.0001 14L10.0001 11M15.0104 3.5V2M18.9498 5.06066L20.0104 4M18.9498 13L20.0104 14.0607M11.0104 5.06066L9.94979 4M20.5104 9H22.0104M6.13146 20.8686L15.3687 11.6314C15.7647 11.2354 15.9627 11.0373 16.0369 10.809C16.1022 10.6082 16.1022 10.3918 16.0369 10.191C15.9627 9.96265 15.7647 9.76465 15.3687 9.36863L14.6315 8.63137C14.2354 8.23535 14.0374 8.03735 13.8091 7.96316C13.6083 7.8979 13.3919 7.8979 13.1911 7.96316C12.9627 8.03735 12.7647 8.23535 12.3687 8.63137L3.13146 17.8686C2.73545 18.2646 2.53744 18.4627 2.46325 18.691C2.39799 18.8918 2.39799 19.1082 2.46325 19.309C2.53744 19.5373 2.73545 19.7354 3.13146 20.1314L3.86872 20.8686C4.26474 21.2646 4.46275 21.4627 4.69108 21.5368C4.89192 21.6021 5.10827 21.6021 5.30911 21.5368C5.53744 21.4627 5.73545 21.2646 6.13146 20.8686Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+ </svg>`;
+
+      ["mousedown", "click", "mouseup", "command"].forEach((type) => {
+        randomBtn.addEventListener(
+          type,
+          (e) => {
+            e.stopPropagation();
+            if (type === "click" || type === "command") {
+              e.preventDefault();
+              this.randomizeGradient();
+            }
+          },
+          true,
+        );
+      });
+      gradientPanel.appendChild(randomBtn);
+    }
 
     let style = document.getElementById("zen-picker-mods-palette-css");
     if (!style) {
@@ -1460,6 +1489,31 @@ class PaletteModule {
                 align-items: center;
                 justify-content: center;
                 list-style-image: none !important;
+            }
+            #zen-picker-randomize {
+                position: absolute;
+                top: 15px;
+                right: 12px;
+                z-index: 1001;
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                list-style-image: none !important;
+                border: none !important;
+                padding: 0 !important;
+                min-width: fit-content !important;
+                transition: background 0.2s, opacity 0.2s;
+                appearance: none;
+                max-height: 30px;
+                max-width: 30px;
+                min-height: 30px;
+                min-width: 30px !important;
+                color: light-dark(rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0.9));
+                opacity: 0.75;
+            }
+            #zen-picker-randomize:hover {
+                background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
+                opacity: 1;
             }
             #zen-picker-lightness-wrapper {
                 position: relative;
@@ -1782,6 +1836,220 @@ class PaletteModule {
       `Switched to ${this._getPaletteToastLabel(nextMode)} palette`,
       "zen-palette-switched-toast",
     );
+  }
+
+  randomizeGradient() {
+    const picker = this.picker;
+    const gradientPanel = picker?.panel?.querySelector(
+      ".zen-theme-picker-gradient",
+    );
+    if (!picker || !gradientPanel) return;
+
+    const rect = gradientPanel.getBoundingClientRect();
+    const panelSize = rect.width > 10 ? rect.width : 380;
+    const center = panelSize / 2;
+    const radius = panelSize / 2;
+
+    const dotCount = this._randomInt(2, 6);
+    const mode = this._pickRandomMode();
+    const primary = this._randomPrimaryPosition(center, radius);
+    const harmony = this._pickHarmony(dotCount);
+    const texture = this._randomTexture();
+    const rotation = this._pickRotation();
+
+    const seedDots = Array.from({ length: dotCount }, (_, id) => ({
+      ID: id,
+      position: { x: primary.x, y: primary.y },
+      type: mode.type,
+    }));
+
+    picker.useAlgo = harmony;
+    const harmonized =
+      picker.calculateCompliments(seedDots, "update", harmony) || seedDots;
+
+    const colorPositions = harmonized.slice(0, dotCount).map((dot, index) => ({
+      ID: index,
+      position: this._clampToCircle(dot.position, center, radius * 0.96),
+      type: mode.type,
+    }));
+
+    const primaryPos = colorPositions[0]?.position || { x: center, y: center };
+    const dx = primaryPos.x - center;
+    const dy = primaryPos.y - center;
+    const inferredPerDotLightness = Math.max(
+      0,
+      Math.min(100, (Math.hypot(dx, dy) / Math.max(1, radius)) * 100),
+    );
+    const lightness =
+      mode.type === "explicit-lightness"
+        ? mode.lightness
+        : inferredPerDotLightness;
+
+    const randomState = {
+      algo: harmony,
+      lightness: Math.round(lightness),
+      numDots: dotCount,
+      paletteType: mode.type,
+      opacity: picker.currentOpacity,
+      texture,
+      rotation,
+      dots: colorPositions.map((d) => ({
+        id: d.ID,
+        x: Math.round(d.position.x),
+        y: Math.round(d.position.y),
+      })),
+    };
+
+    const favMod = picker._favoritesMod || ZenPickerMods.favoritesMod;
+    if (favMod?.applyFavorite) {
+      favMod.applyFavorite(randomState);
+      return;
+    }
+
+    // Fallback if Favorites module is unavailable.
+    this._internalUpdate = true;
+    try {
+      this._selectedMode = mode.type === undefined ? null : mode;
+      picker.handleColorPositions(colorPositions, true);
+      if (mode.type === "explicit-lightness") {
+        picker.dots.forEach((dot) => {
+          dot.type = "explicit-lightness";
+          dot.lightness = mode.lightness;
+        });
+        this.forceNativeLightness(mode.lightness);
+      } else {
+        picker.dots.forEach((dot) => {
+          dot.type = mode.type;
+        });
+      }
+      picker.useAlgo = harmony;
+      picker.currentTexture = texture;
+      if (picker._rotationModule) {
+        picker._rotationModule.currentRotation = rotation;
+        picker._rotationModule.applyRotation();
+      } else {
+        picker.updateCurrentWorkspace(false);
+      }
+    } finally {
+      this._internalUpdate = false;
+    }
+    this.updateUI(true);
+  }
+
+  _pickHarmony(dotCount) {
+    const byCount = {
+      2: ["complementary", "singleAnalogous", "linear"],
+      3: ["splitComplementary", "triadic", "analogous", "linear"],
+      4: ["polygonal4", "analogousLinear4"],
+      5: ["polygonal5", "analogous5", "hybridAnalogous5"],
+      6: ["polygonal6", "doubleAnalogous6"],
+    };
+    return this._pickRandom(byCount[dotCount] || ["triadic"]);
+  }
+
+  _pickRandomMode() {
+    const modes = [
+      { mode: PaletteModule.MODES[0], weight: 3.4 }, // full
+      { mode: PaletteModule.MODES[2], weight: 3.2 }, // vibrant
+      { mode: PaletteModule.MODES[1], weight: 2.2 }, // pastel
+      { mode: PaletteModule.MODES[3], weight: 1.3 }, // dark
+      { mode: PaletteModule.MODES[4], weight: 0.9 }, // deep dark
+    ];
+    const picked = this._pickWeighted(modes) || PaletteModule.MODES[2];
+    const mode = { ...picked };
+    if (mode.type === "explicit-lightness") {
+      mode.lightness = Math.max(
+        8,
+        Math.min(92, mode.lightness + this._randomInt(-6, 6)),
+      );
+    }
+    return mode;
+  }
+
+  _randomPrimaryPosition(center, radius) {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = radius * (0.42 + Math.pow(Math.random(), 0.85) * 0.48);
+    return {
+      x: center + Math.cos(angle) * dist,
+      y: center + Math.sin(angle) * dist,
+    };
+  }
+
+  _randomTexture() {
+    // Native texture control uses 16 fixed steps: 0, 1/16, ..., 15/16.
+    // Strong bias toward lower grain and mostly within steps 0..9.
+    const weightedSteps = [
+      { mode: 0, weight: 18 },
+      { mode: 1, weight: 15 },
+      { mode: 2, weight: 13 },
+      { mode: 3, weight: 11 },
+      { mode: 4, weight: 9 },
+      { mode: 5, weight: 8 },
+      { mode: 6, weight: 7 },
+      { mode: 7, weight: 6 },
+      { mode: 8, weight: 5 },
+      { mode: 9, weight: 4 },
+      { mode: 10, weight: 1.6 },
+      { mode: 11, weight: 1.1 },
+      { mode: 12, weight: 0.8 },
+      { mode: 13, weight: 0.6 },
+      { mode: 14, weight: 0.4 },
+      { mode: 15, weight: 0.3 },
+    ];
+    const step = this._pickWeighted(weightedSteps);
+    return step / 16;
+  }
+
+  _pickRotation() {
+    // Usually keep rotation at 0, otherwise prefer smaller offsets.
+    const weightedAngles = [
+      { mode: 0, weight: 30 },
+      { mode: 15, weight: 4.2 },
+      { mode: -15, weight: 4.2 },
+      { mode: 30, weight: 2.8 },
+      { mode: -30, weight: 2.8 },
+      { mode: 45, weight: 1.2 },
+      { mode: -45, weight: 1.2 },
+      { mode: 60, weight: 0.7 },
+      { mode: -60, weight: 0.7 },
+    ];
+    return this._pickWeighted(weightedAngles);
+  }
+
+  _clampToCircle(position, center, radius) {
+    const dx = (position?.x ?? center) - center;
+    const dy = (position?.y ?? center) - center;
+    const dist = Math.hypot(dx, dy);
+    if (dist <= radius || dist === 0) {
+      return {
+        x: Math.max(0, Math.round(position?.x ?? center)),
+        y: Math.max(0, Math.round(position?.y ?? center)),
+      };
+    }
+    const scale = radius / dist;
+    return {
+      x: Math.round(center + dx * scale),
+      y: Math.round(center + dy * scale),
+    };
+  }
+
+  _pickWeighted(entries) {
+    const total = entries.reduce((sum, entry) => sum + entry.weight, 0);
+    let roll = Math.random() * total;
+    for (const entry of entries) {
+      roll -= entry.weight;
+      if (roll <= 0) return entry.mode;
+    }
+    return entries[entries.length - 1]?.mode;
+  }
+
+  _pickRandom(list) {
+    if (!Array.isArray(list) || list.length === 0) return null;
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
+  _randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   _getPaletteToastLabel(mode) {
