@@ -52,12 +52,25 @@
   <tr>
     <td>
       <h3>Palette Switcher</h3>
-      <video src="https://github.com/user-attachments/assets/3924dc3c-7b32-41b8-9cca-1f0cde47faef"
+      <video src="https://github.com/user-attachments/assets/bff9bb8a-7a94-4e4a-8165-0b611084b92b"
         autoplay loop muted playsinline width="100%"></video>
     </td>
     <td>
-      <h3>Dynamic Light & Dark Mode</h3>
-      <video src="https://github.com/user-attachments/assets/0ed89385-6dda-4ca6-b172-1e3a1559c842"
+      <h3>Dynamic Light & Dark Mode (Pref)</h3>
+      <video src="https://github.com/user-attachments/assets/496ff780-f6e4-4cb2-bf90-cf8f46335602"
+        autoplay loop muted playsinline width="100%"></video>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <h3>Lightness Invert (Pref)</h3>
+      <video src="https://github.com/user-attachments/assets/da0df409-bfda-4e51-a9d9-ad876c51542b"
+        autoplay loop muted playsinline width="100%"></video>
+    </td>
+    <td>
+      <h3>Randomizer Button</h3>
+      <video src="https://github.com/user-attachments/assets/388689cb-badd-4767-9095-0e487db350d6"
         autoplay loop muted playsinline width="100%"></video>
     </td>
   </tr>
