@@ -1,118 +1,98 @@
 <h1 align="center">BetterZenGradientPicker</h1>
-<div align="center">
-    <a href="https://zen-browser.app/">
-        <img width="180" alt="zen-badge-dark" src="https://github.com/user-attachments/assets/d6ab3ddf-6630-4062-92d0-22497d2a3f9a" />
-    </a>
-</div>
-
-###
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/e1034a8b-9c0e-4c1c-b855-fdd2cd357514" width="800" />
+  <a href="https://zen-browser.app/">
+    <img width="180" alt="Zen Browser" src="https://github.com/user-attachments/assets/d6ab3ddf-6630-4062-92d0-22497d2a3f9a">
+  </a>
 </div>
 
-###
+<br>
 
-<h2 align="left">Why Does This Exist?</h2>
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/e1034a8b-9c0e-4c1c-b855-fdd2cd357514" width="800">
+</div>
 
-###
+---
+
+## Why Does This Exist?
 
 <p align="left">Zen's current gradient picker is great, but it is limited and does not have many features natively.<br><br>I constantly get annoyed by lack of control i have over the graadients created, that is why i made this mod to give user mode control and try to provide an overall better experience to users<br>This is an experimental JS mod which i cant guarentee that it is 100% reliable but as always I have tried my best to make it feel as native as possible. If you experience unusual bugs then please let me know...</p>
 
-###
+---
 
-<h2 align="left">Features :)</h2>
+## Features
 
-<h3 align="left">1. Up to 6 colors </h3>
-    <video
-      src="https://github.com/user-attachments/assets/ecce00f1-fea6-44fd-a4e3-7c5f390c24af"
-      autoplay
-      loop
-      muted
-      playsinline
-      width="100%">
-    </video>
+<table>
+  <tr>
+    <td width="50%">
+      <h3>Up to 6 Colors</h3>
+      <video src="https://github.com/user-attachments/assets/c552008d-a2c6-4692-a47b-8b1e72415b73"
+        autoplay loop muted playsinline width="100%"></video>
+    </td>
+    <td width="50%">
+      <h3>Save Gradient Configurations</h3>
+      <video src="https://github.com/user-attachments/assets/97c4ecf3-e5bb-4188-9185-167970416c82"
+        autoplay loop muted playsinline width="100%"></video>
+    </td>
+  </tr>
 
-<h3 align="left">2. Save your gradient configuration! </h3>
-    <video
-      src="https://github.com/user-attachments/assets/546541e8-9b33-4402-aba5-ebd8e6c16815"
-      autoplay
-      loop
-      muted
-      playsinline
-      width="100%">
-    </video>
+  <tr>
+    <td>
+      <h3>Rotation Knob</h3>
+      <video src="https://github.com/user-attachments/assets/e1c1d70b-86e6-4267-8ad2-d783c4d51bd9"
+        autoplay loop muted playsinline width="100%"></video>
+    </td>
+    <td>
+      <h3>Lightness Slider <sub>(v1.3)</sub></h3>
+      <video src="https://github.com/user-attachments/assets/9863c01e-6c02-413c-b000-4a954ae41d5c"
+        autoplay loop muted playsinline width="100%"></video>
+    </td>
+  </tr>
 
-<h3 align="left">3. Rotation Knob </h3>
-    <video
-      src="https://github.com/user-attachments/assets/5db259c6-281d-4259-87a8-d81d68c3a604"
-      autoplay
-      loop
-      muted
-      playsinline
-      width="100%">
-    </video>
+  <tr>
+    <td>
+      <h3>Palette Switcher</h3>
+      <video src="https://github.com/user-attachments/assets/3924dc3c-7b32-41b8-9cca-1f0cde47faef"
+        autoplay loop muted playsinline width="100%"></video>
+    </td>
+    <td>
+      <h3>Dynamic Light & Dark Mode</h3>
+      <video src="https://github.com/user-attachments/assets/0ed89385-6dda-4ca6-b172-1e3a1559c842"
+        autoplay loop muted playsinline width="100%"></video>
+    </td>
+  </tr>
+</table>
 
-<h3 align="left">4. (New) Lightness Slider! ~ Added in v1.3</h3>
-    <video
-      src="https://github.com/user-attachments/assets/9863c01e-6c02-413c-b000-4a954ae41d5c"
-      autoplay
-      loop
-      muted
-      playsinline
-      width="100%">
-    </video>
+---
 
-<h3 align="left">5. Palette Switcher </h3>
-    <video
-      src="https://github.com/user-attachments/assets/3924dc3c-7b32-41b8-9cca-1f0cde47faef"
-      autoplay
-      loop
-      muted
-      playsinline
-      width="100%">
-    </video>
+## Color Harmonies
 
-<h3 align="left">6. (Optional) Dynamic Light & Dark mode depending on gradient! </h3>
-    <video
-      src="https://github.com/user-attachments/assets/0ed89385-6dda-4ca6-b172-1e3a1559c842"
-      autoplay
-      loop
-      muted
-      playsinline
-      width="100%">
-    </video>
+<table>
+  <tr>
+    <td width="33%">
+      <h3>Floating</h3>
+      <video src="https://github.com/user-attachments/assets/213a74e5-7c42-48c7-974b-2447c5d4b878"
+        autoplay loop muted playsinline width="100%"></video>
+    </td>
+    <td width="33%">
+      <h3>Linear (2–3 colors)</h3>
+      <video src="https://github.com/user-attachments/assets/7bd5a18d-01b8-4ae5-874a-e50af06a975f"
+        autoplay loop muted playsinline width="100%"></video>
+    </td>
+    <td width="33%">
+      <h3>Hybrid (Linear + Analogous)</h3>
+      <video src="https://github.com/user-attachments/assets/31e1d8f2-1e4c-42d5-9e04-c935a5a553de"
+        autoplay loop muted playsinline width="100%"></video>
+    </td>
+  </tr>
+</table>
 
-<h3 align="left">7. New Color Harmonies </h3>
-    <p align="left"> • Floating Mode! </p>
-        <video
-          src="https://github.com/user-attachments/assets/213a74e5-7c42-48c7-974b-2447c5d4b878"
-          autoplay
-          loop
-          muted
-          playsinline
-          width="100%">
-        </video>
-    <p align="left"> • Linear (For 2 & 3 colors) </p>
-        <video
-          src="https://github.com/user-attachments/assets/7bd5a18d-01b8-4ae5-874a-e50af06a975f"
-          autoplay
-          loop
-          muted
-          playsinline
-          width="100%">
-        </video>
-    <p align="left"> • Hybrid (Linear + Analogous) for 3+ colors </p>
-        <video
-          src="https://github.com/user-attachments/assets/31e1d8f2-1e4c-42d5-9e04-c935a5a553de"
-          autoplay
-          loop
-          muted
-          playsinline
-          width="100%">
-        </video>
+---
 
-<h2 align="left">Installation</h2>
+## Installation
 
-1. Install [Sine](https://github.com/CosmoCreeper/Sine) if you dont already have it.
-2. Go to settings > Sine Mods (or Cosine if you are using that), Here you will see the marketplace of Sine. Search for "BetterZenGradientPicker" and install this mod directly from there.
+1. Install **Sine** if you don’t already have it  
+   https://github.com/CosmoCreeper/Sine
+2. Open **Settings → Sine Mods** (or **Cosine**)
+3. Search for **BetterZenGradientPicker**
+4. Install directly from the marketplace
